@@ -127,7 +127,7 @@ class Tranzzo extends AbstractMethod
 
         $data_response = Payment::parseDataResponse($data);
 
-        $order_id = (int)$data_response[Payment::P_RES_PROV_ORDER_ID];
+        $order_id = (int)$data_response[Payment::P_RES_PROV_ORDER];
 
         $order = $orderFactory->create()->loadByIncrementId($order_id);
 

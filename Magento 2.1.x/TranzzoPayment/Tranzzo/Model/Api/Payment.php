@@ -37,7 +37,7 @@ class Payment
     const P_REQ_SANDBOX     = 'sandbox';
 
     //Response params
-    const P_RES_PROV_ORDER_ID  = 'provider_order_id';
+    const P_RES_PROV_ORDER  = 'provider_order_id';
     const P_RES_PAYMENT_ID  = 'payment_id';
     const P_RES_TRSACT_ID   = 'transaction_id';
     const P_RES_STATUS      = 'status';
