@@ -1,0 +1,10 @@
+Title,"Название способа оплаты"
+Enabled,"Включить"
+Yes,Да
+No,Нет
+"Allowed Shipping Methods","Разрешенные методы доставки"
+"Payment from Applicable Countries","Оплата в соответствующих странах"
+"Payment from Specific Countries","Оплата из отдельных стран"
+"Sort Order","Порядок сортировки"
+"Place Order","Оплатить заказ"
+"There was an error creating the payment","Произошла ошибка при создании платежа"
