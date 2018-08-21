@@ -282,12 +282,12 @@ class Payment
         curl_close($ch);
 
         // for check request
-        self::writeLog($url);
-        self::writeLog(array('headers' => $this->headers));
-        self::writeLog(array('params' => $params));
+        // self::writeLog($url);
+        // self::writeLog(array('headers' => $this->headers));
+        // self::writeLog(array('params' => $params));
 
-        self::writeLog(array("httpcode" => $http_code, "errno" => $errno));
-        self::writeLog(['response' => $server_response]);
+        // self::writeLog(array("httpcode" => $http_code, "errno" => $errno));
+        // self::writeLog(['response' => $server_response]);
 
         if(!$errno && empty($server_response))
             return $http_code;
