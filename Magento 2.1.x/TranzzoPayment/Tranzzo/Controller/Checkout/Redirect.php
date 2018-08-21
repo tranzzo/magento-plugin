@@ -48,9 +48,8 @@ class Redirect extends Action
                 $result = $this->_paymentModel->createPayment($order);
 
                 if ($result['redirect']) {
-                    ob_clean();
-                    header("Location: {$result['redirect']}");
-                    exit;
+                    $this->getCheckoutSession()->setBeGatewayCheckoutRedirectUrl(null);
+                    $this->getResponse()->setRedirect($result['redirect']);
                 }
             }
         }

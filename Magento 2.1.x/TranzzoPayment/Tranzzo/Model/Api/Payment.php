@@ -63,6 +63,7 @@ class Payment
     //URI method
     const U_METHOD_PAYMENT = '/payment';
     const U_METHOD_POS = '/pos';
+    const U_METHOD_REFUND = '/refund';
 
 
 
@@ -281,12 +282,12 @@ class Payment
         curl_close($ch);
 
         // for check request
-//        self::writeLog($url, '', '', 0);
-//        self::writeLog(array('headers' => $this->headers));
-//        self::writeLog(array('params' => $params));
-//
-//        self::writeLog(array("httpcode" => $http_code, "errno" => $errno));
-//        self::writeLog('response', $server_response);
+        self::writeLog($url);
+        self::writeLog(array('headers' => $this->headers));
+        self::writeLog(array('params' => $params));
+
+        self::writeLog(array("httpcode" => $http_code, "errno" => $errno));
+        self::writeLog(['response' => $server_response]);
 
         if(!$errno && empty($server_response))
             return $http_code;
@@ -309,6 +310,19 @@ class Payment
         }
 
         return true;
+    }
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function createRefund($params = array())
+    {
+        $params[self::P_REQ_POS_ID] = $this->posId;
+
+        $this->setHeader('Accept: application/json');
+        $this->setHeader('Content-Type: application/json');
+
+        return $this->request(self::R_METHOD_POST, self::U_METHOD_REFUND, $params);
     }
 
     /**
@@ -394,7 +408,7 @@ class Payment
     static function writeLog($data, $flag = '', $filename = '', $append = true)
     {
         $filename = !empty($filename)? strval($filename) : basename(__FILE__);
-        file_put_contents(__DIR__ . "/{$filename}.log", "\n\n" . date('H:i:s') . " - $flag \n" .
+        file_put_contents(__DIR__ . "/{$filename}.log", "\n\n" . date('Y-m-d H:i:s') . " - $flag \n" .
             (is_array($data)? json_encode($data, JSON_PRETTY_PRINT):$data)
             , ($append? FILE_APPEND : 0)
         );

@@ -34,12 +34,7 @@ class Callback extends Action
 
     public function execute()
     {
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->_paymentModel->processCallback($_POST, $this->_orderFactory);
-        }
-        else{
-            die('Hack??? Lol!!!');
-        }
+            $this->_paymentModel->processCallback($this->_request->getParams(), $this->_orderFactory);
     }
 
     protected function getCheckoutSession()

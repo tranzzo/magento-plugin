@@ -31,7 +31,12 @@ class Tranzzo extends AbstractMethod
      * @var string
      */
     const CODE = 'tranzzo';
-    protected $_code = 'tranzzo';
+    protected $_code = self::CODE;
+    protected $_isGateway                   = true;
+    protected $_canRefund                   = true;
+    protected $_canRefundInvoicePartial     = true;
+    protected $_transactionBuilder;
+    protected $_invoiceService;
 
     public function __construct(
         Context $context,
@@ -43,12 +48,14 @@ class Tranzzo extends AbstractMethod
         Logger $logger,
         UrlInterface $urlBuilder,
         StoreManagerInterface $storeManager,
+        \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface $builderInterface,
+        \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
-    )
-    {
-
+    ) {
+        $this->_transactionBuilder = $builderInterface;
+        $this->_invoiceService = $invoiceService;
         parent::__construct(
             $context,
             $registry,
@@ -121,14 +128,13 @@ class Tranzzo extends AbstractMethod
 
     public function processCallback($response, OrderFactory $orderFactory)
     {
+        if(empty($response['data']) || empty($response['signature'])) die('Wrong data!');
         $data = $response['data'];
         $signature = $response['signature'];
-        if(empty($data) && empty($signature)) die('LOL! Bad Request!!!');
 
         $data_response = Payment::parseDataResponse($data);
-
+        Payment::writeLog(['callback'=>$data_response]);
         $order_id = (int)$data_response[Payment::P_RES_PROV_ORDER];
-
         $order = $orderFactory->create()->loadByIncrementId($order_id);
 
         if($order->getPayment()->getMethod() == self::CODE) {
@@ -147,9 +153,71 @@ class Tranzzo extends AbstractMethod
 
                 $payment = $order->getPayment();
                 if ($data_response[Payment::P_RES_RESP_CODE] == 1000 && ($amount_payment >= $amount_order)) {
-                    $payment->setTransactionId($order_id)->setIsTransactionClosed(0);
-                    $order->setStatus(Order::STATE_COMPLETE);
-                    $order->setState(Order::STATE_COMPLETE);
+
+                    $trans_id = $data_response[Payment::P_RES_ORDER];
+                    $payment->setLastTransId($trans_id);
+                    $payment->setTransactionId($trans_id);
+                    $payment->setAdditionalInformation(
+                      [\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS => $data_response]
+                    );
+
+                    $message = __('The Captured amount is %1.', $amount_payment);
+//get the object of builder class Magento\Sales\Model\Order\Payment\Transaction\Builder
+                    $trans = $this->_transactionBuilder;
+                    $transaction = $trans->setPayment($payment)
+                      ->setOrder($order)
+                      ->setTransactionId($trans_id)
+                      ->setAdditionalInformation(
+                        [\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS => (array)$payment->getAdditionalInformation()]
+                      )
+                      ->setFailSafe(true)
+                      //build method creates the transaction and returns the object
+                      ->build(\Magento\Sales\Model\Order\Payment\Transaction::TYPE_CAPTURE);
+
+                    $payment->addTransactionCommentsToOrder(
+                      $transaction,
+                      $message
+                    );
+                    if ($order->getState() == Order::STATE_CANCELED) {
+                        $order->setState(Order::STATE_PROCESSING)->setStatus(Order::STATE_PROCESSING);
+                    }
+                    $payment->setSkipOrderProcessing(true);
+                    $payment->setParentTransactionId(null);
+
+                    $payment->save();
+                    $order->save();
+                    $transaction->save();
+                    if($order->canInvoice()) {
+                        $invoice = $this->_invoiceService->prepareInvoice($order);
+                        $invoice = $invoice->setTransactionId($payment->getTransactionId())
+                          ->addComment("Invoice created.")
+                          ->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_ONLINE);
+                        $invoice->setGrandTotal($amount_order);
+                        $invoice->setBaseGrandTotal($amount_order);
+                        $invoice->register()
+                          ->pay();
+                        $invoice->save();
+                        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+                        // Save the invoice to the order
+                        $transaction = $objectManager->create('Magento\Framework\DB\Transaction')
+                          ->addObject($invoice)
+                          ->addObject($invoice->getOrder());
+                        $transaction->save();
+
+                        $order->addStatusHistoryComment(
+                          __('Invoice #%1.', $invoice->getId())
+                        )
+                          ->setIsCustomerNotified(true);
+
+                        $order->save();
+                    }
+                } elseif ($data_response['method'] == 'refund') {
+                    $order->addStatusHistoryComment(
+                      'Refunded ' . $data_response['status']
+                    )
+                      ->setIsCustomerNotified(FALSE);
+
                     $order->save();
                 } else {
                     $payment->setTransactionId($order_id)->setIsTransactionClosed(0);
@@ -159,5 +227,54 @@ class Tranzzo extends AbstractMethod
                 }
             }
         }
+    }
+    /**
+     * Refund specified amount for payment
+     *
+     * @param \Magento\Payment\Model\InfoInterface $payment
+     * @param float $amount
+     *
+     * @return $this
+     */
+    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $baseurl = $storeManager->getStore()->getBaseUrl();
+        $data_response = $payment->getAdditionalInformation(\Magento\Sales\Model\Order\Payment\Transaction::RAW_DETAILS);
+        $tranzzo = new Payment(
+            $this->getConfigData('POS_ID'),
+            $this->getConfigData('API_KEY'),
+            $this->getConfigData('API_SECRET'),
+            $this->getConfigData('ENDPOINTS_KEY')
+        );
+        $nvp_data = [
+          'order_id' => $data_response['order_id'],
+          'order_amount' => Payment::amountToDouble($data_response[Payment::P_RES_AMOUNT]),
+          'order_currency' => $data_response[Payment::P_RES_CURRENCY],
+          'refund_date' => date('Y-m-d H:i:s', time()),
+          'amount' => Payment::amountToDouble($amount),
+          'server_url' =>  $baseurl . 'tranzzo/checkout/callback',
+        ];
+        try {
+            $tranzzo_response = $tranzzo->createRefund($nvp_data);
+            if ($tranzzo_response['status'] != 'success') {
+                $message = $tranzzo_response['message'];
+                throw new \Exception($message);
+            }
+
+        } catch (\Exception $e) {
+            $this->getLogger()->error(
+              $e->getMessage()
+            );
+
+            $this->getMessageManager()->addError(
+              $e->getMessage()
+            );
+
+            $this->getModuleHelper()->maskException($e);
+        }
+
+        return $this;
     }
 }

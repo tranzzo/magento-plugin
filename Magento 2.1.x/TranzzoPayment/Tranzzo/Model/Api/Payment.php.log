@@ -1,0 +1,190 @@
+
+
+2018-08-20 08:14:41 -  
+https://cpay.tranzzo.com/api/v1/refund
+
+2018-08-20 08:14:41 -  
+{
+    "headers": [
+        "Accept: application\/json",
+        "Content-Type: application\/json",
+        "X-API-Auth: CPAY 6d80e539-46de-4593-a871-8aca7cc927ea:cnBvelJ1MXhBdzJ5NTdmRUhvTlllbndX",
+        "X-API-KEY: AIzaSyD3q0d1rTWsC2-ICPWXnbyqTS-vZ0N3BhE"
+    ]
+}
+
+2018-08-20 08:14:41 -  
+{
+    "params": {
+        "order_id": "106753842",
+        "order_amount": 1.04000000000000003552713678800500929355621337890625,
+        "order_currency": "UAH",
+        "refund_date": "2018-08-20 08:14:36",
+        "amount": 1,
+        "server_url": "http:\/\/magento-2-1-9.shopez.pp.ua\/tranzzo\/checkout\/callback",
+        "pos_id": "a907613d-d63c-4a75-873c-7a242e1c29f3"
+    }
+}
+
+2018-08-20 08:14:41 -  
+{
+    "httpcode": {
+        "url": "https:\/\/cpay.tranzzo.com\/api\/v1\/refund",
+        "content_type": "application\/json",
+        "http_code": 200,
+        "header_size": 653,
+        "request_size": 565,
+        "filetime": -1,
+        "ssl_verify_result": 0,
+        "redirect_count": 0,
+        "total_time": 4.1209170000000003852846930385567247867584228515625,
+        "namelookup_time": 0.060408999999999997421173958400686387903988361358642578125,
+        "connect_time": 0.06685000000000000663913368725843611173331737518310546875,
+        "pretransfer_time": 0.08880100000000000493027840775539516471326351165771484375,
+        "size_upload": 290,
+        "size_download": 264,
+        "speed_download": 64,
+        "speed_upload": 70,
+        "download_content_length": -1,
+        "upload_content_length": 290,
+        "starttransfer_time": 4.12086699999999961363528200308792293071746826171875,
+        "redirect_time": 0,
+        "redirect_url": "",
+        "primary_ip": "104.25.1.19",
+        "certinfo": [],
+        "primary_port": 443,
+        "local_ip": "91.231.84.200",
+        "local_port": 36930
+    },
+    "errno": 0
+}
+
+2018-08-20 08:14:41 -  
+{
+    "response": "{\"pos_id\":\"a907613d-d63c-4a75-873c-7a242e1c29f3\",\"mode\":\"direct\",\"method\":\"refund\",\"order_id\":\"106753842\",\"amount\":1.04,\"currency\":\"UAH\",\"payment_id\":\"14cdc51e-46d3-49f4-a5de-a7fd282120d5\",\"pay_request_id\":\"a8b61fc5-9b41-4637-98e0-39ca9af793a8\",\"status\":\"success\"}"
+}
+
+2018-08-20 08:14:49 -  
+{
+    "data": {
+        "data": "eyJwb3NfaWQiOiJhOTA3NjEzZC1kNjNjLTRhNzUtODczYy03YTI0MmUxYzI5ZjMiLCJtb2RlIjoiZGlyZWN0IiwibWV0aG9kIjoicmVmdW5kIiwib3JkZXJfaWQiOiIxMDY3NTM4NDIiLCJhbW91bnQiOjEuMDQsImN1cnJlbmN5IjoiVUFIIiwicGF5bWVudF9pZCI6IjE0Y2RjNTFlLTQ2ZDMtNDlmNC1hNWRlLWE3ZmQyODIxMjBkNSIsInBheV9yZXF1ZXN0X2lkIjoiYThiNjFmYzUtOWI0MS00NjM3LTk4ZTAtMzljYTlhZjc5M2E4Iiwic3RhdHVzIjoic3VjY2VzcyIsImNyZWF0ZWQiOiIyMDE4LTA4LTIwVDA4OjE0OjM3LjIzOCIsInByb2Nlc3NpbmdfdGltZSI6IjIwMTgtMDgtMjBUMDg6MTQ6NDAuOTg1In0=",
+        "signature": "doIwF7NEnU5pF8MmZjlpvrD99LM="
+    }
+}
+
+2018-08-20 08:14:49 -  
+{
+    "callback": {
+        "pos_id": "a907613d-d63c-4a75-873c-7a242e1c29f3",
+        "mode": "direct",
+        "method": "refund",
+        "order_id": "106753842",
+        "amount": 1.04000000000000003552713678800500929355621337890625,
+        "currency": "UAH",
+        "payment_id": "14cdc51e-46d3-49f4-a5de-a7fd282120d5",
+        "pay_request_id": "a8b61fc5-9b41-4637-98e0-39ca9af793a8",
+        "status": "success",
+        "created": "2018-08-20T08:14:37.238",
+        "processing_time": "2018-08-20T08:14:40.985"
+    }
+}
+
+2018-08-20 08:14:49 -  
+{
+    "data": {
+        "data": "eyJwb3NfaWQiOiJhOTA3NjEzZC1kNjNjLTRhNzUtODczYy03YTI0MmUxYzI5ZjMiLCJtb2RlIjoiZGlyZWN0IiwibWV0aG9kIjoicmVmdW5kIiwib3JkZXJfaWQiOiIxMDY3NTM4NDIiLCJhbW91bnQiOjEuMDQsImN1cnJlbmN5IjoiVUFIIiwicGF5bWVudF9pZCI6IjE0Y2RjNTFlLTQ2ZDMtNDlmNC1hNWRlLWE3ZmQyODIxMjBkNSIsInBheV9yZXF1ZXN0X2lkIjoiYThiNjFmYzUtOWI0MS00NjM3LTk4ZTAtMzljYTlhZjc5M2E4Iiwic3RhdHVzIjoic3VjY2VzcyIsImNyZWF0ZWQiOiIyMDE4LTA4LTIwVDA4OjE0OjM3LjIzOCIsInByb2Nlc3NpbmdfdGltZSI6IjIwMTgtMDgtMjBUMDg6MTQ6NDAuOTg1In0=",
+        "signature": "doIwF7NEnU5pF8MmZjlpvrD99LM="
+    }
+}
+
+2018-08-20 08:14:49 -  
+{
+    "callback": {
+        "pos_id": "a907613d-d63c-4a75-873c-7a242e1c29f3",
+        "mode": "direct",
+        "method": "refund",
+        "order_id": "106753842",
+        "amount": 1.04000000000000003552713678800500929355621337890625,
+        "currency": "UAH",
+        "payment_id": "14cdc51e-46d3-49f4-a5de-a7fd282120d5",
+        "pay_request_id": "a8b61fc5-9b41-4637-98e0-39ca9af793a8",
+        "status": "success",
+        "created": "2018-08-20T08:14:37.238",
+        "processing_time": "2018-08-20T08:14:40.985"
+    }
+}
+
+2018-08-20 08:14:58 -  
+{
+    "data": {
+        "data": "eyJwb3NfaWQiOiJhOTA3NjEzZC1kNjNjLTRhNzUtODczYy03YTI0MmUxYzI5ZjMiLCJtb2RlIjoiZGlyZWN0IiwibWV0aG9kIjoicmVmdW5kIiwib3JkZXJfaWQiOiIxMDY3NTM4NDIiLCJhbW91bnQiOjEuMDQsImN1cnJlbmN5IjoiVUFIIiwicGF5bWVudF9pZCI6IjE0Y2RjNTFlLTQ2ZDMtNDlmNC1hNWRlLWE3ZmQyODIxMjBkNSIsInBheV9yZXF1ZXN0X2lkIjoiYThiNjFmYzUtOWI0MS00NjM3LTk4ZTAtMzljYTlhZjc5M2E4Iiwic3RhdHVzIjoic3VjY2VzcyIsImNyZWF0ZWQiOiIyMDE4LTA4LTIwVDA4OjE0OjM3LjIzOCIsInByb2Nlc3NpbmdfdGltZSI6IjIwMTgtMDgtMjBUMDg6MTQ6NDAuOTg1In0=",
+        "signature": "doIwF7NEnU5pF8MmZjlpvrD99LM="
+    }
+}
+
+2018-08-20 08:14:58 -  
+{
+    "callback": {
+        "pos_id": "a907613d-d63c-4a75-873c-7a242e1c29f3",
+        "mode": "direct",
+        "method": "refund",
+        "order_id": "106753842",
+        "amount": 1.04000000000000003552713678800500929355621337890625,
+        "currency": "UAH",
+        "payment_id": "14cdc51e-46d3-49f4-a5de-a7fd282120d5",
+        "pay_request_id": "a8b61fc5-9b41-4637-98e0-39ca9af793a8",
+        "status": "success",
+        "created": "2018-08-20T08:14:37.238",
+        "processing_time": "2018-08-20T08:14:40.985"
+    }
+}
+
+2018-08-20 08:14:58 -  
+{
+    "data": {
+        "data": "eyJwb3NfaWQiOiJhOTA3NjEzZC1kNjNjLTRhNzUtODczYy03YTI0MmUxYzI5ZjMiLCJtb2RlIjoiZGlyZWN0IiwibWV0aG9kIjoicmVmdW5kIiwib3JkZXJfaWQiOiIxMDY3NTM4NDIiLCJhbW91bnQiOjEuMDQsImN1cnJlbmN5IjoiVUFIIiwicGF5bWVudF9pZCI6IjE0Y2RjNTFlLTQ2ZDMtNDlmNC1hNWRlLWE3ZmQyODIxMjBkNSIsInBheV9yZXF1ZXN0X2lkIjoiYThiNjFmYzUtOWI0MS00NjM3LTk4ZTAtMzljYTlhZjc5M2E4Iiwic3RhdHVzIjoic3VjY2VzcyIsImNyZWF0ZWQiOiIyMDE4LTA4LTIwVDA4OjE0OjM3LjIzOCIsInByb2Nlc3NpbmdfdGltZSI6IjIwMTgtMDgtMjBUMDg6MTQ6NDAuOTg1In0=",
+        "signature": "doIwF7NEnU5pF8MmZjlpvrD99LM="
+    }
+}
+
+2018-08-20 08:14:58 -  
+{
+    "callback": {
+        "pos_id": "a907613d-d63c-4a75-873c-7a242e1c29f3",
+        "mode": "direct",
+        "method": "refund",
+        "order_id": "106753842",
+        "amount": 1.04000000000000003552713678800500929355621337890625,
+        "currency": "UAH",
+        "payment_id": "14cdc51e-46d3-49f4-a5de-a7fd282120d5",
+        "pay_request_id": "a8b61fc5-9b41-4637-98e0-39ca9af793a8",
+        "status": "success",
+        "created": "2018-08-20T08:14:37.238",
+        "processing_time": "2018-08-20T08:14:40.985"
+    }
+}
+
+2018-08-20 08:15:03 -  
+{
+    "data": {
+        "data": "eyJwb3NfaWQiOiJhOTA3NjEzZC1kNjNjLTRhNzUtODczYy03YTI0MmUxYzI5ZjMiLCJtb2RlIjoiZGlyZWN0IiwibWV0aG9kIjoicmVmdW5kIiwib3JkZXJfaWQiOiIxMDY3NTM4NDIiLCJhbW91bnQiOjEuMDQsImN1cnJlbmN5IjoiVUFIIiwicGF5bWVudF9pZCI6IjE0Y2RjNTFlLTQ2ZDMtNDlmNC1hNWRlLWE3ZmQyODIxMjBkNSIsInBheV9yZXF1ZXN0X2lkIjoiYThiNjFmYzUtOWI0MS00NjM3LTk4ZTAtMzljYTlhZjc5M2E4Iiwic3RhdHVzIjoic3VjY2VzcyIsImNyZWF0ZWQiOiIyMDE4LTA4LTIwVDA4OjE0OjM3LjIzOCIsInByb2Nlc3NpbmdfdGltZSI6IjIwMTgtMDgtMjBUMDg6MTQ6NDAuOTg1In0=",
+        "signature": "doIwF7NEnU5pF8MmZjlpvrD99LM="
+    }
+}
+
+2018-08-20 08:15:03 -  
+{
+    "callback": {
+        "pos_id": "a907613d-d63c-4a75-873c-7a242e1c29f3",
+        "mode": "direct",
+        "method": "refund",
+        "order_id": "106753842",
+        "amount": 1.04000000000000003552713678800500929355621337890625,
+        "currency": "UAH",
+        "payment_id": "14cdc51e-46d3-49f4-a5de-a7fd282120d5",
+        "pay_request_id": "a8b61fc5-9b41-4637-98e0-39ca9af793a8",
+        "status": "success",
+        "created": "2018-08-20T08:14:37.238",
+        "processing_time": "2018-08-20T08:14:40.985"
+    }
+}

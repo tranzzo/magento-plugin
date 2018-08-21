@@ -13,22 +13,18 @@
                 </field>
                 <field id="POS_ID" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>POS_ID</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="API_KEY" translate="label" type="password" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API_KEY</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="API_SECRET" translate="label" type="password" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API_SECRET</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="ENDPOINTS_KEY" translate="label" type="password" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>ENDPOINTS_KEY</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="allowed_carrier" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
