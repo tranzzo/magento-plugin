@@ -8,3 +8,6 @@ No,Нет
 "Sort Order","Порядок сортировки"
 "Place Order","Оплатить заказ"
 "There was an error creating the payment","Произошла ошибка при создании платежа"
+"Payment Action","Платежное действие"
+Purchase,"Покупка"
+"Authorize and Capture","Авторизация и захват"

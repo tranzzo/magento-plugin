@@ -3,7 +3,7 @@ namespace TranzzoPayment\Tranzzo\Model\Api;
 
 class InfoProduct
 {
-    private $item = array();
+    private $item = [];
 
     public function setProductId($value = '')
     {
@@ -14,11 +14,23 @@ class InfoProduct
     {
         $this->item['name'] = strval($value);
     }
+
+    public function setProductCategory($value = '')
+    {
+        $this->item['category'] = strval($value);
+    }
+
+    public function setProductDescription($value = '')
+    {
+        $this->item['description'] = strval($value);
+    }
+
     public function setCurrency($value = '')
     {
         $this->item['currency'] = strval($value);
     }
-    public function setAmount($value = '')
+
+    public function setAmount($value = 0.0)
     {
         $this->item['amount'] = Payment::amountToDouble($value);
     }
@@ -34,6 +46,36 @@ class InfoProduct
             $this->item['url'] = $value;
     }
 
+	/**
+     * Either VAT or NET
+     * @param bool|true $isVAT
+     */
+    public function setPriceType($isVAT = true)
+    {
+        $this->item['price_type'] = $isVAT ? 'VAT' : 'NET';
+    }
+
+	/**
+     * VAT - Value Added Tax
+     * @param float $value
+     */
+    public function setVat($value = 0.0)
+    {
+        $this->item['vat'] = Payment::amountToDouble($value);
+    }
+
+	/**
+     * Field for custom data. Max 4000 symbols.
+     * @param string $value
+     */
+    public function setPayload($value = '')
+    {
+        if(!empty($value)) {
+            $str = strval($value);
+            $this->item['payload'] = (strlen($value) > 4000) ? substr($value, 0, 3999) : $str;
+        }
+    }
+
     public function get()
     {
         return $this->item;
@@ -41,6 +83,6 @@ class InfoProduct
 
     public function reset()
     {
-        $this->item = array();
+        $this->item = [];
     }
 }

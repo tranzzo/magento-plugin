@@ -11,21 +11,21 @@
                 <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
                 </field>
+                <field id="payment_action" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment Action</label>
+                    <source_model>TranzzoPayment\Tranzzo\Model\Adminhtml\Source\ListMethods</source_model>
+                </field>
                 <field id="POS_ID" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>POS_ID</label>
-                    <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="API_KEY" translate="label" type="password" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API_KEY</label>
-                    <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="API_SECRET" translate="label" type="password" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API_SECRET</label>
-                    <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="ENDPOINTS_KEY" translate="label" type="password" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>ENDPOINTS_KEY</label>
-                    <can_be_empty>0</can_be_empty>
                 </field>
                 <field id="allowed_carrier" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Allowed Shipping Methods</label>
@@ -38,7 +38,6 @@
                 <field id="specificcountry" translate="label" type="multiselect" sortOrder="41" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Payment from Specific Countries</label>
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
-                    <can_be_empty>1</can_be_empty>
                 </field>
                 <field id="sort_order" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Sort Order</label>

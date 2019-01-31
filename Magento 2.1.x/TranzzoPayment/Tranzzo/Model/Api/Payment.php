@@ -3,12 +3,19 @@ namespace TranzzoPayment\Tranzzo\Model\Api;
 
 class Payment
 {
+    CONST wrLog = false;
+
     /*
-     * https://tranzzo.docs.apiary.io/ The Tranzzo API is an HTTP API served by Tranzzo payment core
+     * TRANZZO API
+     * https://cdn.tranzzo.com/tranzzo-api/index.html
      */
-    //Common params
     const P_MODE_HOSTED     = 'hosted';
     const P_MODE_DIRECT     = 'direct';
+
+    //Primary operations
+    const P_METHOD_PURCHASE = 'purchase';
+    const P_METHOD_AUTH     = 'auth';
+
     const P_REQ_CPAY_ID     = 'uuid';
     const P_REQ_POS_ID      = 'pos_id';
     const P_REQ_ENDPOINT_KEY = 'key';
@@ -23,6 +30,12 @@ class Payment
     const P_REQ_CC_NUMBER   = 'cc_number';
     const P_REQ_PAYWAY      = 'payway';
 
+    const P_REQ_ORDER_AMOUNT      = 'order_amount';
+    const P_REQ_ORDER_CURRENCY    = 'order_currency';
+
+    const P_REQ_CHARGE_AMOUNT    = 'charge_amount';//amount to be captured
+    const P_REQ_REFUND_AMOUNT    = 'refund_amount';//amount to be captured
+
     const P_OPT_PAYLOAD     = 'payload';
 
     const P_REQ_CUSTOMER_ID     = 'customer_id';
@@ -30,6 +43,8 @@ class Payment
     const P_REQ_CUSTOMER_FNAME  = 'customer_fname';
     const P_REQ_CUSTOMER_LNAME  = 'customer_lname';
     const P_REQ_CUSTOMER_PHONE  = 'customer_phone';
+    const P_REQ_CUSTOMER_IP     = 'customer_ip';
+    const P_REQ_CUSTOMER_COUNTRY = 'customer_country';
 
     const P_REQ_SERVER_URL  = 'server_url';
     const P_REQ_RESULT_URL  = 'result_url';
@@ -37,6 +52,7 @@ class Payment
     const P_REQ_SANDBOX     = 'sandbox';
 
     //Response params
+    const P_RES_METHOD      = 'method';
     const P_RES_PROV_ORDER  = 'provider_order_id';
     const P_RES_PAYMENT_ID  = 'payment_id';
     const P_RES_TRSACT_ID   = 'transaction_id';
@@ -49,22 +65,30 @@ class Payment
     const P_RES_CURRENCY    = 'currency';
 
 
+    //Statuses Transaction
+    const STATUS_INIT = 'init';
+    const STATUS_PENDING = 'pending';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_SUCCESS = 'success';
+    const STATUS_FAILURE = 'failure';
 
-    const P_TRZ_ST_SUCCESS      = 'success';
-    const P_TRZ_ST_PENDING      = 'pending';
-    const P_TRZ_ST_CANCEL       = 'rejected';
-    const P_TRZ_ST_UNSUCCESSFUL = 'unsuccessful';
-    const P_TRZ_ST_ANTIFRAUD    = 'antifraud';
+    const TRZ_ST_INIT = 'init';
+    const TRZ_ST_PENDING = 'pending';
+    const TRZ_ST_PROCESSING = 'processing';
+    const TRZ_ST_SUCCESS = 'success';
+    const TRZ_ST_FAILURE = 'failure';
+
 
     //Request method
     const R_METHOD_GET  = 'GET';
     const R_METHOD_POST = 'POST';
 
     //URI method
-    const U_METHOD_PAYMENT = '/payment';
-    const U_METHOD_POS = '/pos';
-    const U_METHOD_REFUND = '/refund';
-
+    const U_METHOD_PAYMENT = 'payment';
+    const U_METHOD_CAPTURE = 'capture';
+    const U_METHOD_REFUND = 'refund';
+    const U_METHOD_VOID = 'void';
+    const U_METHOD_POS = 'pos';
 
 
     /**
@@ -95,9 +119,9 @@ class Payment
     /**
      * @var array $headers
      */
-    private $headers;
+    private $headers = [];
 
-    private $params = array();
+    private $params = [];
 
     /**
      * Ik_Service_Tranzzo_Api constructor.
@@ -143,6 +167,49 @@ class Payment
         $this->params[self::P_REQ_CURRENCY] = $value;
     }
 
+	/**
+     * set for Void|Capture|Refund
+     * Amount of original order
+     * @param int $value
+     * @param null $round
+     */
+    public function setOrderAmount($value = 0, $round = null)
+    {
+        $this->params[self::P_REQ_ORDER_AMOUNT] = self::amountToDouble($value, $round);
+    }
+
+	/**
+     *  set for Void|Capture|Refund
+     * Currency of original order
+     * @param string $value
+     */
+    public function setOrderCurrency($value = '')
+    {
+        $this->params[self::P_REQ_ORDER_CURRENCY] = $value;
+    }
+
+	/**
+     *  Optional amount to be captured set for Partial Capture
+     * Currency of original order
+     * @param string $value
+     * @param null $round
+     */
+    public function setAmountPartialCapture($value = '', $round = null)
+    {
+        $this->params[self::P_REQ_CHARGE_AMOUNT] = self::amountToDouble($value, $round);
+    }
+
+	/**
+     *  Amount to be refunded set for Partial refund
+     * Currency of original order
+     * @param string $value
+     * @param null $round
+     */
+    public function setAmountPartialRefund($value = '', $round = null)
+    {
+        $this->params[self::P_REQ_REFUND_AMOUNT] = self::amountToDouble($value, $round);
+    }
+
     public function setDescription($value = '')
     {
         $this->params[self::P_REQ_DESCRIPTION] = !empty($value)? $value : 'Order payment';
@@ -176,6 +243,18 @@ class Payment
             $this->params[self::P_REQ_CUSTOMER_PHONE] = $value;
     }
 
+    public function setCustomerIp($value = '')
+    {
+        if(!empty($value))
+            $this->params[self::P_REQ_CUSTOMER_IP] = $value;
+    }
+
+    public function setCustomerCountry($value = '')
+    {
+        if(!empty($value))
+            $this->params[self::P_REQ_CUSTOMER_COUNTRY] = $value;
+    }
+
     public function setProducts($value = array())
     {
         $this->params[self::P_REQ_PRODUCTS] = is_array($value)? $value : array();
@@ -193,7 +272,27 @@ class Payment
      */
     public function setPayLoad($value = '')
     {
-        $this->params[self::P_OPT_PAYLOAD] = $value;
+        //serialize_precision for json_encode
+        if (version_compare(phpversion(), '7.1', '>=')) {
+            ini_set( 'serialize_precision', -1 );
+        }
+        $this->params[self::P_OPT_PAYLOAD] = is_array($value)? base64_encode(json_encode($value)) : $value;
+    }
+
+    public static function parsePayload($value = '')
+    {
+        if(!empty($value)) {
+            $data = (base64_decode($value) === false) ? $value : base64_decode($value);
+
+            return self::isJson($data)? json_decode($data, 1) : $data;
+        }
+
+        return $value;
+    }
+
+    public function setParam($key, $value = '')
+    {
+        $this->params[$key] = $value;
     }
 
     /**
@@ -205,27 +304,35 @@ class Payment
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function createCreditPayment()
+    public function resetParams()
     {
-        $this->params[self::P_REQ_METHOD] = 'credit';
-        $this->params[self::P_REQ_POS_ID] = $this->posId;
-
-        $uri = self::U_METHOD_PAYMENT;
-        $this->setHeader('Content-Type:application/json');
-
-        return $this->request(self::R_METHOD_POST, $uri);
+        $this->params = [];
     }
 
     /**
      * @return mixed
      */
-    public function createPaymentHosted()
+    public function createPaymentPurchase()
     {
         $this->params[self::P_REQ_POS_ID] = $this->posId;
         $this->params[self::P_REQ_MODE] = self::P_MODE_HOSTED;
-        $this->params[self::P_REQ_METHOD] = 'purchase';
+//        $this->params[self::P_REQ_METHOD] = empty($method)? self::P_METHOD_PURCHASE : self::P_METHOD_AUTH;
+        $this->params[self::P_REQ_METHOD] = self::P_METHOD_PURCHASE;
+        $this->params[self::P_REQ_ORDER_3DS_BYPASS] = 'supported'; //supported(default) | always | never
+
+        $this->setHeader('Accept: application/json');
+        $this->setHeader('Content-Type: application/json');
+
+        return $this->request(self::R_METHOD_POST, self::U_METHOD_PAYMENT);
+    }
+
+    public function createPaymentAuth()
+    {
+        $this->params[self::P_REQ_POS_ID] = $this->posId;
+        $this->params[self::P_REQ_MODE] = self::P_MODE_HOSTED;
+        $this->params[self::P_REQ_METHOD] = self::P_METHOD_AUTH;
         $this->params[self::P_REQ_ORDER_3DS_BYPASS] = 'supported';
 
         $this->setHeader('Accept: application/json');
@@ -235,11 +342,59 @@ class Payment
     }
 
     /**
+     * @param $params
      * @return mixed
      */
-    public function checkPaymentStatus()
+    public function createCapture($params = [])
     {
-        $uri = self::U_METHOD_POS. '/' . $this->posId . '/orders/' . $this->params[self::P_REQ_ORDER];
+        $params = !empty($params)? $params : $this->params;
+        $params[self::P_REQ_POS_ID] = $this->posId;
+
+//        $this->setHeader('Content-Type: application/json');
+
+        return $this->request(self::R_METHOD_POST, self::U_METHOD_CAPTURE, $params);
+    }
+
+	/**
+     * Void could be called only for authorizations with success status.
+     * @param array $params
+     * @return mixed
+     */
+    public function createVoid($params = [])
+    {
+        $params = !empty($params)? $params : $this->params;
+        $params[self::P_REQ_POS_ID] = $this->posId;
+
+        $this->setHeader('Accept: application/json');
+        $this->setHeader('Content-Type: application/json');
+
+        return $this->request(self::R_METHOD_POST, self::U_METHOD_VOID, $params);
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function createRefund($params = [])
+    {
+        $params = !empty($params)? $params : $this->params;
+        $params[self::P_REQ_POS_ID] = $this->posId;
+
+        $this->setHeader('Accept: application/json');
+        $this->setHeader('Content-Type: application/json');
+
+        return $this->request(self::R_METHOD_POST, self::U_METHOD_REFUND, $params);
+    }
+
+	/**
+     * Returns all transactions that are associated with order
+     * @param string $orderId
+     * @return mixed
+     */
+    public function getOrderTransactions($orderId = '')
+    {
+        $orderId = empty($orderId)? $this->params[self::P_REQ_ORDER] : $orderId;
+        $uri = self::U_METHOD_POS. '/' . $this->posId . '/orders/' . $orderId;
 
         return $this->request(self::R_METHOD_GET, $uri, []);
     }
@@ -250,9 +405,14 @@ class Payment
      */
     private function request($method, $uri, $params = null)
     {
-        $url    = $this->apiUrl . $uri;
+        $url    = $this->apiUrl . ((strpos(substr($uri, 0,1), '/') === false) ? '/' . $uri : $uri);
         $params = is_null($params)? $this->params : $params;
-        $data   = json_encode($params);
+
+        //serialize_precision for json_encode
+        if (version_compare(phpversion(), '7.1', '>=')) {
+            ini_set( 'serialize_precision', -1 );
+        }
+        $data = json_encode($params);
 
         if(json_last_error()) {
             self::writeLog(json_last_error(), 'json_last_error', 'error');
@@ -281,13 +441,13 @@ class Payment
         $errno = curl_errno($ch);
         curl_close($ch);
 
-        // for check request
-        // self::writeLog($url);
-        // self::writeLog(array('headers' => $this->headers));
-        // self::writeLog(array('params' => $params));
+//         for check request
+         self::writeLog($url);
+         self::writeLog(['headers' => $this->headers]);
+         self::writeLog(['params' => $params]);
 
-        // self::writeLog(array("httpcode" => $http_code, "errno" => $errno));
-        // self::writeLog(['response' => $server_response]);
+         self::writeLog(["httpcode" => $http_code, "errno" => $errno]);
+         self::writeLog(['response' => $server_response]);
 
         if(!$errno && empty($server_response))
             return $http_code;
@@ -303,7 +463,7 @@ class Payment
     public function validateSignature($data, $requestSign)
     {
         $signStr = $this->apiSecret . $data . $this->apiSecret;
-        $sign = self::base64url_encode(sha1($signStr, true));
+        $sign = self::strToSign($signStr);
 
         if ($requestSign !== $sign) {
             return false;
@@ -311,18 +471,14 @@ class Payment
 
         return true;
     }
+
     /**
-     * @param $params
+     * @param $data
      * @return mixed
      */
-    public function createRefund($params = array())
+    public static function parseDataResponse($data)
     {
-        $params[self::P_REQ_POS_ID] = $this->posId;
-
-        $this->setHeader('Accept: application/json');
-        $this->setHeader('Content-Type: application/json');
-
-        return $this->request(self::R_METHOD_POST, self::U_METHOD_REFUND, $params);
+        return json_decode(self::base64url_decode($data), true);
     }
 
     /**
@@ -331,8 +487,12 @@ class Payment
      */
     private function createSign($params)
     {
+        //serialize_precision for json_encode
+        if (version_compare(phpversion(), '7.1', '>=')) {
+            ini_set( 'serialize_precision', -1 );
+        }
         $json      = self::base64url_encode( json_encode($params) );
-        $signature = $this->strToSign($this->apiSecret . $json . $this->apiSecret);
+        $signature = self::strToSign($this->apiSecret . $json . $this->apiSecret);
         return $signature;
     }
 
@@ -340,9 +500,9 @@ class Payment
      * @param $str
      * @return string
      */
-    private function strToSign($str)
+    private static function strToSign($str)
     {
-        return self::base64url_encode(sha1($str,1));
+        return self::base64url_encode(sha1($str, 1));
     }
 
     /**
@@ -362,13 +522,14 @@ class Payment
         return base64_decode(strtr($data, '-_', '+/'));
     }
 
-    /**
-     * @param $data
-     * @return mixed
+	/**
+     * @param $string
+     * @return bool
      */
-    public static function parseDataResponse($data)
+    public static function isJson($string)
     {
-        return json_decode(self::base64url_decode($data), true);
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 
     /**
@@ -376,7 +537,11 @@ class Payment
      */
     private function setHeader($header)
     {
-        $this->headers[] = $header;
+        if(!empty($header)) {
+            if (!in_array($header, $this->headers)) {
+                $this->headers[] = $header;
+            }
+        }
     }
 
     /**
@@ -407,10 +572,17 @@ class Payment
      */
     static function writeLog($data, $flag = '', $filename = '', $append = true)
     {
-        $filename = !empty($filename)? strval($filename) : basename(__FILE__);
-        file_put_contents(__DIR__ . "/{$filename}.log", "\n\n" . date('Y-m-d H:i:s') . " - $flag \n" .
-            (is_array($data)? json_encode($data, JSON_PRETTY_PRINT):$data)
-            , ($append? FILE_APPEND : 0)
-        );
+        if(self::wrLog) {
+            $filename = !empty($filename) ? strval($filename) : 'requestResponseTRANZZO';
+
+            //serialize_precision for json_encode
+            if (version_compare(phpversion(), '7.1', '>=')) {
+                ini_set( 'serialize_precision', -1 );
+            }
+            file_put_contents(__DIR__ . "/{$filename}.log", "\n\n" . date('Y-m-d H:i:s') . " - $flag \n" .
+                (is_array($data) ? json_encode($data, JSON_PRETTY_PRINT) : $data)
+                , ($append ? FILE_APPEND : 0)
+            );
+        }
     }
 }
