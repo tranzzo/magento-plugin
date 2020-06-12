@@ -47,8 +47,7 @@ class Redirect extends Action
             if ($order->getPayment()->getMethod() == Tranzzo::CODE) {
                 $result = $this->_paymentModel->createPayment($order);
 
-                if ($result['redirect']) {
-                    $this->getCheckoutSession()->setBeGatewayCheckoutRedirectUrl(null);
+                if (!empty($result['redirect'])) {
                     $this->getResponse()->setRedirect($result['redirect']);
                 }
             }

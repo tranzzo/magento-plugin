@@ -143,7 +143,7 @@ class Tranzzo extends AbstractMethod
             return [ 'redirect' => $response['redirect_url'] ];
         }
         else
-            return [ 'response' => $response['message'] . ' - ' . implode(', ', $response['args']) ];
+            return [ 'response' => $response['message'] . (!empty($response['args']['obj'][0]['msg'])? ' - ' . implode(', ', $response['args']['obj'][0]['msg']) : '') ]; 
     }
 
     public function processPurchase($response, OrderFactory $orderFactory)
