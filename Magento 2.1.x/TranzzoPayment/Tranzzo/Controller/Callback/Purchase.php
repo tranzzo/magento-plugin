@@ -7,7 +7,7 @@ use \Magento\Framework\App\Request\Http;
 use \Magento\Sales\Model\OrderFactory;
 use \TranzzoPayment\Tranzzo\Model\Tranzzo;
 
-class Purchase extends Action
+class Purchase extends Action implements \Magento\Framework\App\CsrfAwareActionInterface
 {
     protected $_context;
     protected $_request;
@@ -46,5 +46,15 @@ class Purchase extends Action
     protected function getObjectManager()
     {
         return $this->_objectManager;
+    }
+
+    public function createCsrfValidationException(\Magento\Framework\App\RequestInterface $request): ?\Magento\Framework\App\Request\InvalidRequestException
+    {
+        return null;
+    }
+
+    public function validateForCsrf(\Magento\Framework\App\RequestInterface $request): ?bool
+    {
+        return true;
     }
 }

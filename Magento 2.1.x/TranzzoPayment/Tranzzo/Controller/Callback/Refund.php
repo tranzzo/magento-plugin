@@ -7,7 +7,7 @@ use \Magento\Framework\App\Request\Http;
 use \Magento\Sales\Model\OrderFactory;
 use \TranzzoPayment\Tranzzo\Model\Tranzzo;
 
-class Refund extends Action
+class Refund extends Action implements \Magento\Framework\App\CsrfAwareActionInterface
 {
 	protected $_context;
 	protected $_request;
@@ -47,4 +47,14 @@ class Refund extends Action
 	{
 		return $this->_objectManager;
 	}
+
+    public function createCsrfValidationException(\Magento\Framework\App\RequestInterface $request): ?\Magento\Framework\App\Request\InvalidRequestException
+    {
+        return null;
+    }
+
+    public function validateForCsrf(\Magento\Framework\App\RequestInterface $request): ?bool
+    {
+        return true;
+    }
 }
